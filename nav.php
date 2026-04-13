@@ -1,27 +1,11 @@
 <?php
-/*
- * nav.php — Barra de navegação dinâmica
- *
- * Inclua este arquivo dentro do <body> de qualquer página para ter
- * a navbar com controle de acesso e botão de sair.
- *
- * USO (em páginas dentro de subpastas como cliente/, venda/ etc.):
- *   <?php
- *     $nav_base = '../';          // caminho até a raiz do projeto
- *     $nav_ativo = 'clientes';    // nome do item ativo no menu
- *     include '../nav.php';
- *   ?>
- *
- * Valores possíveis para $nav_ativo:
- *   'clientes', 'vendas', 'produtos', 'vendedores', 'fornecedores', 'estoque'
- */
-
-// Garante que auth está carregado (seguro chamar session_start() mais de uma vez)
+//if é uma estrutra Condicional. Session_status() vai verificar a sessao. 'PHP_SESSION_NONE é um valor que indica que a sessão não foi iniciada. session_start() inicia a sessão, permitindo acessar variáveis de sessão como $_SESSION['usuario_nome'] e $_SESSION['usuario_papel'].
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+//$nav_ base serve para garantir que links funcionem corretamente. ?? serve para definifir um valor padrao caso a variavel seja nula. '../' serve para voltar um nível no diretório, o que é útil para garantir que os links funcionem corretamente independentemente de onde a página atual esteja localizada na estrutura de diretórios do projeto.
 $_nav_base  = $nav_base  ?? '../';
+//$nav_ativo é usado para destacar a página atual no menu. Ele deve ser definido em cada página antes de incluir nav.php.
 $_nav_ativo = $nav_ativo ?? '';
 ?>
 <style>
@@ -34,14 +18,14 @@ $_nav_ativo = $nav_ativo ?? '';
   .nav-sair:hover { opacity:.8; }
 </style>
 
-<nav class="navbar">
-  <a href="<?= $_nav_base ?>index.php" class="nav-brand">
-    🛒 <span class="destaque">Loja</span> Sistema
+<nav class="navbar"> <!-- <nav> é usada para definir uma seção de navegação em um documento HTML. A classe é uma classe CSS que pode ser usada para estilizar o elemento "navbar" é usada para aplicar estilos específicos a essa barra de navegação. -->
+  <a href="<?= $_nav_base ?>index.php" class="nav-brand"> <!-- <a> é usada para criar um link em HTML. O atributo href especifica o destino do link, que neste caso é a página index.php localizada no caminho definido por $_nav_base. A classe nav-brand é usada para estilizar o elemento como a marca ou logotipo da barra de navegação. -->
+    🛒 <span class="destaque">Loja</span> Sistema <!-- <span> é usada para criar um elemento de texto que pode ser estilizado com CSS. -->
   </a>
 
-  <div class="nav-links">
+  <div class="nav-links"> <!-- <div> é usada para criar um elemento de contêiner em HTML. A classe nav-links é usada para estilizar o elemento como os links de navegação. -->
     <!-- Clientes e Vendas: todos os papéis -->
-    <a href="<?= $_nav_base ?>cliente/cadastrar.php"
+    <a href="<?= $_nav_base ?>cliente/cadastrar.php" 
        <?= $_nav_ativo === 'clientes' ? 'class="ativo"' : '' ?>>Clientes</a>
     <a href="<?= $_nav_base ?>venda/vender.php"
        <?= $_nav_ativo === 'vendas' ? 'class="ativo"' : '' ?>>Vendas</a>
