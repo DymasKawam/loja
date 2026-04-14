@@ -1,39 +1,33 @@
 <?php
-/*
- * login.php — Página de autenticação do sistema
- *
- * Fluxo:
- *  1. Usuário preenche e-mail + senha
- *  2. O PHP busca o usuário no banco pelo e-mail
- *  3. password_verify() compara a senha digitada com o hash gravado
- *  4. Se válido, cria a sessão e redireciona para o painel correto
- */
-
+//session_start é usado para iniciar uma nova sessão ou retomar uma sessão existente.
 session_start();
 
-// Se já está logado, vai direto para a página inicial
+// !empty() é uma função que verifica se uma variável está definida e não é vazia. $_SESSION['usuario_id'] é a variável de sessão que armazena o ID do usuário logado. Se essa variável estiver definida e não for vazia, significa que o usuário já está logado, e o código dentro do if será executado para redirecionar o usuário para a página index.php, evitando que ele acesse a página de login novamente.
 if (!empty($_SESSION['usuario_id'])) {
+  //header é uma função que envia um cabeçalho HTTP para o navegador do usuário. Neste caso, ele redireciona o usuário para a página index.php se ele já estiver logado.
     header('Location: index.php');
     exit;
 }
-
+//require_once é uma função que inclui e avalia o arquivo especificado durante a execução do script. __DIR__ é uma constante mágica que retorna o diretório do arquivo atual. '/conexao.php' é o caminho relativo para o arquivo de conexão com o banco de dados. Este arquivo deve conter a configuração e a criação da conexão PDO, que será usada para autenticar o usuário durante o processo de login.
 require_once __DIR__ . '/conexao.php';
-
+//$erro é uma variável que será usada para armazenar mensagens de erro durante o processo de login. Ela é inicializada como uma string vazia, e se ocorrer algum erro (como campos vazios ou credenciais incorretas), essa variável será preenchida com a mensagem apropriada, que será exibida ao usuário na interface de login.
 $erro = '';
 
-// ── Processamento do formulário (POST) ───────────────────────
+// ── $_server é uma variável que contém informações sobre os cabeçalhos, caminhos e localizações de script. 'request_method' é um índice que indica o método HTTP usado para acessar a página (GET, POST, etc.). Neste caso, o código verifica se o método de requisição é POST, o que indica que o formulário de login foi submetido. Se for POST, o código dentro do if será executado para processar as credenciais de login fornecidas pelo usuário.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
+    //trim() é uma função que remove espaços em branco do início e do final de uma string. $_POST é uma variável superglobal que contém os dados enviados pelo formulário via método POST. 'email' e 'senha' são os nomes dos campos do formulário de login. O código usa o operador de coalescência nula (??) para fornecer um valor padrão (uma string vazia) caso os índices 'email' ou 'senha' não estejam definidos no array $_POST, evitando erros de acesso a índices indefinidos.
     $email = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
-    // Validação básica
+    // empty() é uma funcao que verifica se uma variável está fazia ou nao esta definida e é usada aqui para validar se os campos de email e senha foram preenchidos. Se algum dos campos estiver vazio, a variável $erro será preenchida com a mensagem 'Preencha o e-mail e a senha.', que será exibida ao usuário na interface de login.
     if (empty($email) || empty($senha)) {
         $erro = 'Preencha o e-mail e a senha.';
     } else {
-        // Busca o usuário pelo e-mail
+       //$stmt é uma variável que armazena a declaração preparada para a consulta SQL. $pdo é a instância da conexão PDO criada no arquivo de conexão. A consulta SQL seleciona o id, nome, senha e papel do usuário na tabela 'usuarios' onde o email corresponde ao valor fornecido pelo usuário. O uso de uma declaração preparada ajuda a prevenir ataques de injeção SQL, garantindo que os dados do usuário sejam tratados de forma segura.
         $stmt = $pdo->prepare('SELECT id, nome, senha, papel FROM usuarios WHERE email = ? LIMIT 1');
+        // execute() é um método que executa a declaração preparada. Ele recebe um array de valores que serão vinculados aos parâmetros da consulta SQL.
         $stmt->execute([$email]);
+        // fetch() é um método que recupera a próxima linha do conjunto de resultados da consulta SQL como um array associativo.
         $usuario = $stmt->fetch();
 
         /*
