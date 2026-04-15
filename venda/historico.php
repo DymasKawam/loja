@@ -1,18 +1,20 @@
 <?php
+//Require_once é uma maneira de incluir um arquivo PHP, mas com a garantia de que ele só será incluído uma vez durante a execução do script. Se o arquivo já tiver sido incluído antes, ele não será incluído novamente, evitando erros de redefinição de funções, classes ou variáveis. No caso do auth.php, isso é importante para garantir que as funções de autenticação e verificação de login sejam definidas apenas uma vez, mesmo que este script seja incluído em outros arquivos que também incluem auth.php.
 require_once '../auth.php';
+//exigir_login() é uma função definida no auth.php que verifica se o usuário está autenticado. Se o usuário não estiver logado, essa função geralmente redireciona para a página de login ou exibe uma mensagem de acesso negado. Isso é importante para proteger páginas que devem ser acessadas apenas por usuários autenticados, como o histórico de vendas neste caso.
 exigir_login();
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Histórico de Vendas</title>
-  <link rel="stylesheet" href="../estilo.css">
+<!DOCTYPE html> <!-- Declaração do tipo de documento HTML5 para garantir que o navegador renderize a página corretamente -->
+<html lang="pt-BR"><!-- Define o idioma da página como português do Brasil para melhor acessibilidade e SEO -->
+<head>  <!--A tag <head> contém metadados e links para recursos externos, como arquivos CSS. Ela é essencial para definir a estrutura e o estilo da página. -->
+  <meta charset="UTF-8"> <!-- Define a codificação de caracteres para UTF-8, garantindo suporte a caracteres acentuados e especiais do português -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Garante que a página seja responsiva em dispositivos móveis -->
+  <title>Histórico de Vendas</title> <!-- Título da página exibido na aba do navegador -->
+  <link rel="stylesheet" href="../estilo.css"> <!-- Link para o arquivo de estilos CSS -->
 </head>
-<body>
+<body> <!-- A tag <body> contém todo o conteúdo visível da página, como texto, imagens e links. É onde a estrutura principal da interface do usuário é construída. -->
 
-<nav class="navbar">
+<nav class="navbar"> <!-- nav é usado para definir uma seção de navegação. A classe "navbar" é  estilizada no CSS para criar um menu de navegação horizontal. -->
   <a href="../index.php" class="nav-brand">🛒 <span class="destaque">Loja</span> Sistema</a>
   <div class="nav-links">
     <a href="../cliente/cadastrar.php">Clientes</a>
@@ -25,7 +27,7 @@ exigir_login();
 </nav>
 
 <?php
-include("../conexao.php"); // Conecta ao banco de dados
+include("../conexao.php"); // Include é usado para incluir o arquivo de conexão com o banco de dados. Ele é necessário para executar consultas SQL e obter os dados necessários para exibir o histórico de vendas. O arquivo conexao.php contém a configuração de conexão e a criação do objeto PDO para interagir com o banco de dados.
 
 // Busca todas as vendas com os dados de cliente, vendedor, produto e data
 // Vários JOINs conectam as tabelas para montar o histórico completo em uma só query
