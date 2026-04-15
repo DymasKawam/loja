@@ -14,16 +14,16 @@
 // "localhost" significa que o banco está na mesma máquina que o PHP (XAMPP, por exemplo)
 $host = "localhost";
 
-// Nome de usuário do banco — no XAMPP o padrão é "root"
+// $user é o nome de usuário para acessar o banco de dados. No XAMPP, o usuário padrão é "root".
 $user = "root";
 
-// Senha do banco — no XAMPP normalmente fica em branco
+// $pass é a senha do banco de dados. No XAMPP normalmente fica em branco
 $pass = "";
 
-// Nome do banco de dados que o sistema vai usar
+// $db é o nome do banco de dados que o sistema vai usar
 $db = "loja";
 
-try {
+try { // O bloco try/catch é usado para tentar estabelecer a conexão e capturar qualquer erro que possa ocorrer durante esse processo. Se a conexão falhar, o código dentro do catch será executado, mostrando uma mensagem de erro.
     /*
      * PDO (PHP Data Objects) é a forma moderna e segura de conectar ao banco.
      * O DSN (Data Source Name) é uma string que reúne todas as informações
@@ -34,19 +34,16 @@ try {
      * dbname → qual banco usar
      * charset=utf8mb4 → garante que acentos e emojis sejam salvos corretamente
      */
+    //$user é o nome do usuário do banco de dados, e $pass é a senha correspondente. Esses valores são passados como argumentos para o construtor do PDO, que tenta estabelecer a conexão com o banco de dados usando as informações fornecidas no DSN.
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
 
-    // ERRMODE_EXCEPTION faz o PDO lançar um erro quando algo der errado na query,
-    // em vez de falhar silenciosamente — isso facilita muito o debug
+    //$pdo é o objeto de conexão criado pelo PDO. setAttribute() é um método do PDO que permite configurar opções para a conexão. A opção PDO::ATTR_ERRMODE define o modo de tratamento de erros. Ao usar PDO::ERRMODE_EXCEPTION, o PDO lançará uma exceção (PDOException) sempre que ocorrer um erro na execução de uma consulta ou operação no banco de dados. Isso facilita a identificação e tratamento de erros, permitindo que o código capture a exceção e tome as medidas apropriadas, como exibir uma mensagem de erro amigável ou registrar o erro para análise posterior.
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // FETCH_ASSOC faz o PDO retornar os resultados como array com nome das colunas
-    // em vez de arrays com índices numéricos — muito mais legível no código
+    // $pdo é o objeto de conexão criado pelo PDO. setAttribute() é um método do PDO que permite configurar opções para a conexão. A opção PDO::ATTR_DEFAULT_FETCH_MODE define o modo de busca padrão para as consultas. Ao usar PDO::FETCH_ASSOC, as consultas retornarão os resultados como arrays associativos, onde as chaves do array correspondem aos nomes das colunas do banco de dados. Isso torna o código mais legível e fácil de trabalhar, pois você pode acessar os valores usando os nomes das colunas em vez de índices numéricos.
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-} catch (PDOException $e) {
-    // Se a conexão falhar (senha errada, banco não existe etc.), mostra o erro e para tudo
-    // Em produção, seria melhor não mostrar o erro diretamente para o usuário
-    die("Erro de conexão com o banco de dados: " . $e->getMessage());
+} catch (PDOException $e) { // cath é usado para capturar a exceção lançada pelo PDO em caso de erro de conexão. A variável $e contém informações sobre o erro ocorrido, e getMessage() é um método que retorna uma mensagem descritiva do erro. Nesse caso, se a conexão falhar, a mensagem de erro será exibida para o usuário, indicando que houve um problema ao tentar conectar ao banco de dados.
+    die("Erro de conexão com o banco de dados: " . $e->getMessage()); // die é uma função do PHP que encerra a execução do script e exibe uma mensagem. $e é a variável que contém a exceção capturada, e getMessage() é um método que retorna uma mensagem descritiva do erro.
 }
 ?>

@@ -36,18 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          */
         if ($usuario && password_verify($senha, $usuario['senha'])) {
 
-            // Regenera o ID de sessão para prevenir session fixation
+            // session_regenerate_id(true) é uma função que gera um novo ID de sessão para o usuário, invalidando o ID de sessão antigo. Isso é uma medida de segurança importante para prevenir ataques de fixação de sessão, onde um invasor tenta usar um ID de sessão conhecido para se passar por um usuário legítimo.
             session_regenerate_id(true);
 
-            // Grava os dados do usuário na sessão
+            // _SESSION é um array superglobal que armazena informações sobre a sessão do usuário. Aqui, estamos armazenando o ID do usuário, o nome e o papel (admin ou vendedor) na sessão para que possam ser acessados em outras páginas do sistema, permitindo a personalização da experiência do usuário e o controle de acesso com base no papel.
             $_SESSION['usuario_id']    = $usuario['id'];
             $_SESSION['usuario_nome']  = $usuario['nome'];
             $_SESSION['usuario_papel'] = $usuario['papel'];
 
-            // Redireciona para a URL guardada antes do login, ou para o índice
+            // $destino é uma variável que armazena a URL para a qual o usuário será redirecionado após um login bem-sucedido. $_session é um array superglobal que armazena informações sobre a sessão do usuário. 'redirecionamento' é um índice que pode conter a URL para a qual o usuário deve ser redirecionado após o login. O operador de coalescência nula (??) é usado para fornecer um valor padrão ('index.php') caso o índice 'redirecionamento' não esteja definido na sessão, garantindo que o usuário seja redirecionado para a página inicial do sistema se nenhuma URL específica for fornecida.
             $destino = $_SESSION['redirecionamento'] ?? 'index.php';
+            // unset() é uma função que destrói a variável especificada. Aqui, estamos removendo a variável de sessão 'redirecionamento' após usá-la para garantir que ela não seja reutilizada em futuras sessões ou redirecionamentos.
             unset($_SESSION['redirecionamento']);
+            // header() é uma função que envia um cabeçalho HTTP para o navegador do usuário. Neste caso, ele redireciona o usuário para a URL armazenada na variável $destino após um login bem-sucedido.
             header('Location: ' . $destino);
+            // exit() é uma função que encerra a execução do script PHP. Isso é usado aqui para garantir que o redirecionamento seja executado imediatamente.
             exit;
 
         } else {
@@ -57,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login — Sistema Loja</title>
-  <link rel="stylesheet" href="estilo.css">
+<!DOCTYPE html> <!-- Declaração do tipo de documento HTML5 -->
+<html lang="pt-BR"><!--lang é um atributo que especifica o idioma do conteúdo da página. Neste caso, "pt-BR". -->
+<head> <!-- Cabeçalho do documento HTML -->
+  <meta charset="UTF-8"> <!-- Define a codificação de caracteres como UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Define a viewport para garantir que a página seja responsiva em dispositivos móveis -->
+  <title>Login — Sistema Loja</title> <!-- Título da página que aparece na aba do navegador -->
+  <link rel="stylesheet" href="estilo.css"> <!-- Link para o arquivo de estilo CSS externo -->
   <style>
     /* ── Layout centralizado para a tela de login ── */
     body {
@@ -105,31 +108,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<div class="login-wrapper">
+<div class="login-wrapper"> <!--div é um elemento de contêiner genérico usado para agrupar outros elementos. A classe "login-wrapper" é usada para aplicar estilos específicos a este contêiner, como largura máxima, preenchimento e centralização do conteúdo. -->
 
   <!-- Logo / cabeçalho -->
   <div class="login-logo">
-    <h1>🛒 <span class="destaque">Loja</span> Sistema</h1>
-    <p>Faça login para continuar</p>
+    <h1>🛒 <span class="destaque">Loja</span> Sistema</h1> <!-- <h1> é usado para criar um título principal na página. O span com a classe "destaque" é usado para aplicar estilos específicos ao texto "Loja". -->
+    <p>Faça login para continuar</p> <!-- <p> é usado para criar um parágrafo de texto que serve como uma instrução ou mensagem para o usuário, indicando que ele deve fazer login para acessar o sistema. -->
   </div>
 
   <!-- Card de login -->
-  <div class="card">
-    <div class="card-topo">
-      <h2>Entrar</h2>
-      <p>Informe suas credenciais de acesso</p>
+  <div class="card"> <!-- A classe "card" é usada para aplicar estilos específicos a este contêiner, como bordas, sombras e espaçamento, criando um visual de cartão para o formulário de login. -->
+    <div class="card-topo"> <!-- A classe "card-topo" é usada para aplicar estilos específicos à seção superior do cartão, como margens, alinhamento e espaçamento. -->
+      <h2>Entrar</h2> <!-- <h2> é usado para criar um subtítulo na página. -->
+      <p>Informe suas credenciais de acesso</p>  <!-- <p> é usado para criar um parágrafo de texto que serve como uma instrução ou mensagem para o usuário -->
     </div>
 
     <!-- Mensagem de erro -->
-    <?php if ($erro): ?>
-      <div class="alerta alerta-erro">⚠️ <?= htmlspecialchars($erro) ?></div>
-    <?php endif; ?>
+    <?php if ($erro): ?> <!-- Verifica se a variável $erro contém uma mensagem de erro. Se sim, o código dentro deste bloco será executado para exibir a mensagem de erro ao usuário. -->
+      <div class="alerta alerta-erro">⚠️ <?= htmlspecialchars($erro) ?></div> <!-- <div> é um elemento de contêiner genérico usado para agrupar outros elementos. A classe "alerta alerta-erro" é usada para aplicar estilos específicos a este contêiner; O conteúdo da mensagem de erro é exibido usando a função htmlspecialchars() para garantir que caracteres especiais sejam tratados de forma segura, prevenindo ataques de injeção de código. -->
+    <?php endif; ?> <!-- endif é usado para fechar a estrutura condicional iniciada pelo if. -->
 
     <!-- Formulário -->
-    <form action="login.php" method="POST">
+    <form action="login.php" method="POST"> <!-- <form> é um elemento HTML usado para criar um formulário de entrada de dados. O atributo "action" especifica a URL para a qual os dados do formulário serão enviados quando o usuário clicar no botão de envio. O atributo "method" especifica o método HTTP a ser usado ao enviar o formulário, neste caso, POST, que é usado para enviar dados de forma segura. -->
 
-      <div class="form-grupo">
-        <label class="form-label" for="email">E-mail</label>
+      <div class="form-grupo"> <!-- A classe "form-grupo" é usada para aplicar estilos específicos a este contêiner, como margens, alinhamento e espaçamento. -->
+        <label class="form-label" for="email">E-mail</label> <!-- <label> é usado para criar um rótulo para o campo de entrada. O atributo "for" associa o rótulo ao campo de entrada com o id correspondente, melhorando a acessibilidade. -->
+          <!-- <input> é um elemento HTML usado para criar um campo de entrada de dados. A classe "form-control" é usada para aplicar estilos específicos a este campo. O atributo "type" especifica o tipo de campo de entrada, neste caso, "email", que valida automaticamente o formato do e-mail. O atributo "id" é usado para associar o campo ao rótulo correspondente. O atributo "name" é usado para identificar o campo quando os dados do formulário são enviados. O atributo "placeholder" fornece um texto de exemplo dentro do campo para orientar o usuário. O atributo "value" pré-preenche o campo com o valor enviado anteriormente, se houver, usando a função htmlspecialchars() para garantir que caracteres especiais sejam tratados de forma segura. Os atributos "required" e "autofocus" garantem que o campo seja preenchido antes do envio e que ele receba foco automaticamente quando a página for carregada. -->
         <input
           class="form-control"
           type="email"
@@ -141,8 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           autofocus>
       </div>
 
-      <div class="form-grupo">
-        <label class="form-label" for="senha">Senha</label>
+      <div class="form-grupo"> <!-- A classe "form-grupo" é usada para aplicar estilos específicos a este contêiner, como margens, alinhamento e espaçamento. -->
+        <label class="form-label" for="senha">Senha</label> <!-- <label> é usado para criar um rótulo para o campo de entrada. O atributo "for" associa o rótulo ao campo de entrada com o id correspondente, melhorando a acessibilidade. -->
+          <!-- <input> é um elemento HTML usado para criar um campo de entrada de dados. A classe "form-control" é usada para aplicar estilos específicos a este campo. O atributo "type" especifica o tipo de campo de entrada, neste caso, "password", que oculta o valor digitado. O atributo "id" é usado para associar o campo ao rótulo correspondente. O atributo "name" é usado para identificar o campo quando os dados do formulário são enviados. O atributo "placeholder" fornece um texto de exemplo dentro do campo para orientar o usuário. O atributo "value" pré-preenche o campo com o valor enviado anteriormente, se houver, usando a função htmlspecialchars() para garantir que caracteres especiais sejam tratados de forma segura. O atributo "required" garante que o campo seja preenchido antes do envio. -->
         <input
           class="form-control"
           type="password"
@@ -151,21 +156,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           placeholder="••••••••"
           required>
       </div>
-
+      <!-- div é um elemento de contêiner genérico usado para agrupar outros elementos. A classe "form-acoes" é usada para aplicar estilos específicos a este contêiner, como margens, alinhamento e espaçamento. -->
       <div class="form-acoes">
+        <!-- <button> é um elemento HTML usado para criar um botão clicável. A classe "btn btn-primario" é usada para aplicar estilos específicos a este botão. O atributo "type" especifica o tipo de botão, neste caso, "submit", que envia os dados do formulário quando clicado. O estilo "width:100%" faz com que o botão ocupe toda a largura disponível dentro do contêiner pai. O conteúdo do botão inclui um emoji de cadeado e o texto "Entrar". -->
         <button type="submit" class="btn btn-primario" style="width:100%">
           🔐 Entrar
-        </button>
+        </button> <!-- O botão de envio é usado para enviar os dados do formulário para o servidor para processamento. -->
       </div>
 
     </form>
   </div>
 
-  <!-- Dica de credenciais (remova em produção!) -->
+  <!-- div style é um elemento de contêiner genérico usado para agrupar outros elementos. O atributo "style" é usado para aplicar estilos CSS diretamente a este elemento. Este contêiner é usado para exibir as credenciais de teste para os usuários, indicando quais e-mails e senhas podem ser usados para acessar o sistema com diferentes papéis (admin e vendedor). -->
   <div style="text-align:center; margin-top:1rem; color:var(--text-muted,#64748b); font-size:0.82rem;">
-    <strong>Credenciais de teste:</strong><br>
-    <span class="badge-papel badge-admin">admin</span> admin@loja.com / admin123 &nbsp;|&nbsp;
-    <span class="badge-papel badge-vendedor">vendedor</span> vendedor@loja.com / vend123
+    <strong>Credenciais de teste:</strong><br> <!-- <strong> é usado para destacar o texto "Credenciais de teste:" e <br: é usado para criar uma quebra de linha, separando o título das credenciais listadas abaixo. -->
+    <span class="badge-papel badge-admin">admin</span> admin@loja.com / admin123 &nbsp;|&nbsp; <!-- <span> é um elemento de contêiner genérico usado para agrupar outros elementos. A classe "badge-papel badge-admin" é usada para aplicar estilos específicos a este elemento, indicando que se trata de um usuário com papel de administrador. O texto " -->
+    <span class="badge-papel badge-vendedor">vendedor</span> vendedor@loja.com / vend123  <!-- <span> é um elemento de contêiner genérico usado para agrupar outros elementos. A classe "badge-papel badge-vendedor" é usada para aplicar estilos específicos a este elemento, indicando que se trata de um usuário com papel de vendedor. O texto " -->
   </div>
 
 </div>
