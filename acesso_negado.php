@@ -1,7 +1,5 @@
 <?php
-/*
- * acesso_negado.php — Exibido quando o usuário não tem permissão para a página
- */
+//session_start() é uma função do PHP que inicia uma nova sessão ou retoma uma sessão existente. 
 session_start();
 ?>
 <!DOCTYPE html>
