@@ -1,19 +1,18 @@
 <?php
-include("../conexao.php"); // Conecta ao banco de dados
+include("../conexao.php"); // Inclui o arquivo de conexão com o banco de dados para permitir a execução de consultas SQL e transações necessárias para processar a venda.
 
-// Verifica se todos os campos obrigatórios chegaram pelo POST
-// Se qualquer um estiver faltando, o script para imediatamente
+// if é uma estrutura de controle de fluxo que verifica se as variáveis 'produto', 'quantidade', 'cliente' e 'vendedor' estão definidas no array $_POST. Se alguma dessas variáveis não estiver definida, a função die() é chamada para interromper a execução do script e exibir a mensagem "Dados incompletos! Volte e preencha todos os campos.". Isso garante que o script só continue a processar a venda se todas as informações necessárias forem fornecidas pelo formulário e isset é uma função que verifica se uma variável está definida e não é nula, garantindo que os dados necessários para processar a venda estejam presentes antes de prosseguir.
 if (!isset($_POST['produto'], $_POST['quantidade'], $_POST['cliente'], $_POST['vendedor'])) {
     die("Dados incompletos! Volte e preencha todos os campos.");
 }
 
-// Converte os IDs para inteiro — garante que não chegue texto no lugar de número
-$idProduto  = (int) $_POST['produto'];
+// Converte os dados recebidos do formulário para os tipos adequados antes de usar nas consultas SQL. (int) é usado para converter os valores para inteiros, garantindo que sejam do tipo correto para as operações de banco de dados e cálculos posteriores.
+$idProduto  = (int) $_POST['produto']; 
 $qtdCompra  = (int) $_POST['quantidade'];
 $idCliente  = (int) $_POST['cliente'];
 $idVendedor = (int) $_POST['vendedor'];
 
-// Valida a quantidade antes de consultar o banco
+// Validações básicas para garantir que os IDs sejam positivos e a quantidade seja maior que zero. Se alguma dessas condições não for atendida, a função die() é chamada para interromper a execução do script e exibir uma mensagem de erro correspondente. Isso ajuda a prevenir dados inválidos ou maliciosos de serem processados.
 if ($qtdCompra <= 0) {
     die("Quantidade inválida! O valor precisa ser maior que zero.");
 }
@@ -34,14 +33,14 @@ if ($estoque['quantidade'] < $qtdCompra) {
     die("Estoque insuficiente! Disponível: {$estoque['quantidade']} unidade(s).");
 }
 
-try {
-    $pdo->beginTransaction(); // Abre transação: venda + item + atualização de estoque salvam juntos
+try { //try é usado para envolver um bloco de código que pode gerar uma exceção. Se uma exceção for lançada dentro do bloco try, a execução do código é interrompida e o controle é transferido para o bloco catch correspondente, onde a exceção pode ser tratada de forma adequada.
+    $pdo->beginTransaction(); //pdo é a variável que representa a conexão com o banco de dados usando PDO (PHP Data Objects). beginTransaction() é um método que inicia uma nova transação no banco de dados. Isso significa que todas as operações de banco de dados executadas após essa chamada serão tratadas como parte de uma única transação, permitindo que sejam confirmadas ou revertidas juntas, garantindo a integridade dos dados durante o processo de venda.
 
-    // 2. Registra a venda com o cliente e o vendedor
+    // stmt2 é uma variável que armazena a consulta SQL preparada para inserir uma nova venda na tabela "venda". prepare() é um método do objeto PDO que prepara a consulta para execução, permitindo o uso de parâmetros nomeados (:c e :v) para evitar injeção de SQL. execute() é chamado em seguida para executar a consulta, passando um array associativo que vincula os parâmetros nomeados aos valores reais ($idCliente e $idVendedor) que serão inseridos na tabela. Isso registra a venda com o cliente e vendedor correspondentes no banco de dados.
     $stmt2 = $pdo->prepare("INSERT INTO venda (id_cliente, id_vendedor) VALUES (:c, :v)");
     $stmt2->execute([':c' => $idCliente, ':v' => $idVendedor]);
 
-    $idVenda = $pdo->lastInsertId(); // Pega o ID da venda recém criada para vincular os itens
+    $idVenda = $pdo->lastInsertId(); // idVenda é uma variável que armazena o ID da venda recém-inserida na tabela "venda". lastInsertId() é um método do objeto PDO que retorna o ID da última linha inserida no banco de dados. Isso é útil para obter o ID da venda que acabou de ser registrada, permitindo que seja usado posteriormente para associar os itens vendidos a essa venda específica.
 
     // 3. Registra o item vendido nessa venda
     $stmt3 = $pdo->prepare("INSERT INTO item_venda (id_venda, id_produto, quantidade)

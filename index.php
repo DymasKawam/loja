@@ -4,14 +4,14 @@ require_once __DIR__ . '/auth.php';
 //exigir_login é uma função definida em auth.php que verifica se o usuário está logado. Se o usuário não estiver logado, essa função provavelmente redireciona para a página de login ou exibe uma mensagem de erro.
 exigir_login('');   // raiz do projeto, sem prefixo de pasta
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
+<!DOCTYPE html> <!-- é a declaração do tipo de documento HTML5, que informa ao navegador que o conteúdo da página está escrito em HTML5. -->
+<html lang="pt-BR"> <!-- é a tag de abertura do documento HTML, lang: define o idioma da página como português do Brasil. -->
+<head> <!-- é a tag de abertura do cabeçalho do documento HTML. -->
   <meta charset="UTF-8"> <!-- Define a codificação de caracteres como UTF-8, que suporta acentos e emojis -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Garante que a página seja responsiva em dispositivos móveis -->
   <title>Painel — Sistema Loja</title>
   <link rel="stylesheet" href="estilo.css"> <!-- rel serve para indicar que este link é para uma folha de estilo CSS, e href especifica o caminho para o arquivo de estilo. -->
-  <style>
+  <style> 
     /* Badge de papel na navbar */
     .badge-papel {
       display: inline-block;
@@ -76,9 +76,9 @@ exigir_login('');   // raiz do projeto, sem prefixo de pasta
   </div>
 
   <!-- ── Módulo: Clientes (todos os papéis) ── -->
-  <p class="grupo-titulo">Clientes</p>
-  <div class="dashboard-grade">
-    <a href="cliente/cadastrar.php" class="dash-card">
+  <p class="grupo-titulo">Clientes</p> <!-- p é um elemento de parágrafo usado para definir um bloco de texto. A classe "grupo-titulo" é usada para aplicar estilos específicos a este elemento, indicando que se trata do título de um grupo ou seção. O conteúdo "Clientes" indica que esta seção da dashboard está relacionada à gestão de clientes, onde os usuários podem acessar funcionalidades como cadastrar novos clientes ou listar os clientes existentes. -->
+  <div class="dashboard-grade"> 
+    <a href="cliente/cadastrar.php" class="dash-card"> 
       <div class="dash-icone">➕</div>
       <div class="dash-titulo">Cadastrar Cliente</div>
       <div class="dash-desc">Adiciona um novo cliente com endereço</div>
@@ -153,7 +153,7 @@ exigir_login('');   // raiz do projeto, sem prefixo de pasta
   </div>
 
   <!-- ── Módulo: Estoque (só admin) ── -->
-  <p class="grupo-titulo">Estoque</p>
+  <p class="grupo-titulo">Estoque</p> 
   <div class="dashboard-grade">
     <a href="estoque/entrada.php" class="dash-card">
       <div class="dash-icone">📥</div>
