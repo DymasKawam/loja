@@ -110,11 +110,11 @@ $vendas = $pdo->query($sql)->fetchAll(); // $vendas é uma variável que armazen
                   R$ <?= number_format($total, 2, ',', '.') ?> <!-- number_format() é uma função que formata um número com as opções de casas decimais, separador decimal e separador de milhares. Neste caso, $total é formatado para exibir 2 casas decimais, usando a vírgula como separador decimal e o ponto como separador de milhares, seguindo o formato monetário brasileiro. O resultado é exibido com o símbolo "R$" para indicar que se trata de um valor em reais. -->
                 </td>
               </tr>
-            <?php endforeach; ?>
+            <?php endforeach; ?> <!-- endforeach é usado para fechar a estrutura de loop iniciada pelo foreach. Ele indica o fim do bloco de código que deve ser executado para cada elemento do array $vendas. -->
           </tbody>
         </table>
       </div>
-    <?php endif; ?>
+    <?php endif; ?> <!-- endif é usado para fechar a estrutura condicional iniciada pelo if. Ele indica o fim do bloco de código que deve ser executado se a condição do if for verdadeira. Neste caso, ele marca o fim do bloco que exibe a tabela de vendas quando há vendas registradas. -->
 
   </div>
 </div>
