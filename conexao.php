@@ -10,15 +10,18 @@
  * basta alterar as variáveis abaixo — o resto do sistema não precisa mudar.
  */
 
+// Lê as configurações do banco de dados a partir do arquivo .env
+// O parse_ini_file interpreta o arquivo no formato CHAVE = VALOR
+$env = parse_ini_file(__DIR__ . '/.env');
+
 // Endereço do servidor onde o banco de dados está rodando
-// "localhost" significa que o banco está na mesma máquina que o PHP (XAMPP, por exemplo)
-$host = "localhost";
+$host = $env['ENDERECO_DB'];
 
-// $user é o nome de usuário para acessar o banco de dados. No XAMPP, o usuário padrão é "root".
-$user = "root";
+// Nome de usuário para acessar o banco de dados
+$user = trim($env['USUARIO_DB'], "'\"");
 
-// $pass é a senha do banco de dados. No XAMPP normalmente fica em branco
-$pass = "";
+// Senha do banco de dados
+$pass = trim($env['SENHA_DB'], "'\"");
 
 // $db é o nome do banco de dados que o sistema vai usar
 $db = "loja";
