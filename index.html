@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <!-- Garante que a página se adapta corretamente a qualquer tamanho de tela -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Loja</title>
+  <!-- Importa a folha de estilos compartilhada do projeto -->
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- Barra de navegação que aparece no topo de todas as páginas -->
+<nav class="navbar">
+  <!-- Logo/nome do sistema — leva de volta para a página inicial -->
+  <a href="index.html" class="nav-brand">🛒 <span class="destaque">Loja</span> Sistema</a>
+  <!-- Links de navegação para cada módulo do sistema -->
+  <div class="nav-links">
+    <a href="cliente/cadastrar.php">Clientes</a>
+    <a href="produto/cadastrar.php">Produtos</a>
+    <a href="vendedor/cadastrar.php">Vendedores</a>
+    <a href="fornecedor/cadastrar.php">Fornecedores</a>
+    <a href="estoque/entrada.php">Estoque</a>
+    <a href="venda/vender.php">Vendas</a>
+  </div>
+</nav>
+
+<!-- Conteúdo principal da página inicial -->
+<div class="container">
+
+  <!-- Título de boas-vindas -->
+  <div class="dash-header" style="margin-top:0.5rem">
+    <h1>Painel do Sistema</h1>
+    <p>Selecione uma área abaixo para começar</p>
+  </div>
+
+  <!-- ── Módulo: Clientes ── -->
+  <p class="grupo-titulo">Clientes</p>
+  <div class="dashboard-grade">
+    <!-- Card de cadastro de cliente -->
+    <a href="cliente/cadastrar.php" class="dash-card">
+      <div class="dash-icone">➕</div>
+      <div class="dash-titulo">Cadastrar Cliente</div>
+      <div class="dash-desc">Adiciona um novo cliente com endereço</div>
+    </a>
+    <!-- Card de listagem de clientes -->
+    <a href="cliente/listar.php" class="dash-card">
+      <div class="dash-icone">📋</div>
+      <div class="dash-titulo">Listar Clientes</div>
+      <div class="dash-desc">Visualiza todos os clientes cadastrados</div>
+    </a>
+  </div>
+
+  <!-- ── Módulo: Produtos ── -->
+  <p class="grupo-titulo">Produtos</p>
+  <div class="dashboard-grade">
+    <a href="produto/cadastrar.php" class="dash-card">
+      <div class="dash-icone">📦</div>
+      <div class="dash-titulo">Cadastrar Produto</div>
+      <div class="dash-desc">Adiciona produto com preço e estoque inicial</div>
+    </a>
+    <a href="produto/listar.php" class="dash-card">
+      <div class="dash-icone">🗂️</div>
+      <div class="dash-titulo">Listar Produtos</div>
+      <div class="dash-desc">Visualiza todos os produtos e seus preços</div>
+    </a>
+  </div>
+
+  <!-- ── Módulo: Vendedores ── -->
+  <p class="grupo-titulo">Vendedores</p>
+  <div class="dashboard-grade">
+    <a href="vendedor/cadastrar.php" class="dash-card">
+      <div class="dash-icone">🧑‍💼</div>
+      <div class="dash-titulo">Cadastrar Vendedor</div>
+      <div class="dash-desc">Registra um novo vendedor no sistema</div>
+    </a>
+    <a href="vendedor/listar.php" class="dash-card">
+      <div class="dash-icone">👥</div>
+      <div class="dash-titulo">Listar Vendedores</div>
+      <div class="dash-desc">Vê todos os vendedores cadastrados</div>
+    </a>
+  </div>
+
+  <!-- ── Módulo: Fornecedores ── -->
+  <p class="grupo-titulo">Fornecedores</p>
+  <div class="dashboard-grade">
+    <a href="fornecedor/cadastrar.php" class="dash-card">
+      <div class="dash-icone">🏭</div>
+      <div class="dash-titulo">Cadastrar Fornecedor</div>
+      <div class="dash-desc">Cadastra fornecedor, endereço e produtos de uma vez</div>
+    </a>
+    <a href="fornecedor/ligar_produto.php" class="dash-card">
+      <div class="dash-icone">🔗</div>
+      <div class="dash-titulo">Vincular Produto</div>
+      <div class="dash-desc">Adiciona um produto a um fornecedor já existente</div>
+    </a>
+  </div>
+
+  <!-- ── Módulo: Estoque ── -->
+  <p class="grupo-titulo">Estoque</p>
+  <div class="dashboard-grade">
+    <a href="estoque/entrada.php" class="dash-card">
+      <div class="dash-icone">📥</div>
+      <div class="dash-titulo">Entrada de Estoque</div>
+      <div class="dash-desc">Registra entrada com ou sem fornecedor</div>
+    </a>
+    <a href="estoque/consulta.php" class="dash-card">
+      <div class="dash-icone">🔍</div>
+      <div class="dash-titulo">Consultar Estoque</div>
+      <div class="dash-desc">Pesquisa por fornecedor ou por produto</div>
+    </a>
+  </div>
+
+  <!-- ── Módulo: Vendas ── -->
+  <p class="grupo-titulo">Vendas</p>
+  <div class="dashboard-grade">
+    <a href="venda/vender.php" class="dash-card">
+      <div class="dash-icone">🛍️</div>
+      <div class="dash-titulo">Realizar Venda</div>
+      <div class="dash-desc">Registra uma nova venda e desconta o estoque</div>
+    </a>
+    <a href="venda/historico.php" class="dash-card">
+      <div class="dash-icone">📜</div>
+      <div class="dash-titulo">Histórico de Vendas</div>
+      <div class="dash-desc">Consulta todas as vendas realizadas</div>
+    </a>
+  </div>
+
+</div><!-- fim do container -->
+</body>
+</html>
