@@ -46,7 +46,7 @@ include("../conexao.php"); // Conecta ao banco para carregar fornecedores e prod
     </div>
 
     <?php
-    // Exibe a mensagem certa conforme o parâmetro que veio na URL
+    // Verifica se a URL tem ?msg=entrada_ok, ?msg=ajuste_ok ou ?msg=erro para mostrar mensagens de feedback para o usuário. Essas mensagens são definidas nos scripts salvar_entrada.php e ajustar_estoque.php, que redirecionam de volta para esta página com o parâmetro msg indicando o resultado da operação. Se msg for "entrada_ok", mostra uma mensagem de sucesso para o registro da entrada com fornecedor. Se msg for "ajuste_ok", mostra uma mensagem de sucesso para o ajuste direto de estoque. Se msg for "erro", mostra uma mensagem de erro com detalhes adicionais passados no parâmetro "detalhe".
     if (isset($_GET['msg'])) {
         if ($_GET['msg'] === 'entrada_ok')
             echo '<div class="alerta alerta-sucesso">✅ Entrada com fornecedor registrada!</div>';
@@ -85,7 +85,7 @@ include("../conexao.php"); // Conecta ao banco para carregar fornecedores e prod
             <select class="form-control" id="id_fornecedor" name="id_fornecedor" required>
               <option value="">— Selecione —</option>
               <?php
-              // Popula o select com todos os fornecedores cadastrados
+              // Popula o select com todos os fornecedores cadastrados. A query seleciona o ID e o nome de todos os fornecedores do banco de dados, ordenados por nome. O resultado é iterado usando um loop foreach para gerar as opções do select, onde cada opção tem o valor do ID do fornecedor e exibe o nome do fornecedor para o usuário escolher.
               foreach ($pdo->query("SELECT id, nome FROM fornecedor ORDER BY nome") as $f):
               ?>
                 <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['nome']) ?></option>
@@ -98,7 +98,7 @@ include("../conexao.php"); // Conecta ao banco para carregar fornecedores e prod
             <select class="form-control" id="id_produto" name="id_produto" required>
               <option value="">— Selecione —</option>
               <?php
-              // Popula o select com todos os produtos cadastrados
+              // Popula o select com todos os produtos cadastrados. A query seleciona o ID e o nome de todos os produtos do banco de dados, ordenados por nome. O resultado é iterado usando um loop foreach para gerar as opções do select, onde cada opção tem o valor do ID do produto e exibe o nome do produto para o usuário escolher.
               foreach ($pdo->query("SELECT id, nome FROM produto ORDER BY nome") as $p):
               ?>
                 <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['nome']) ?></option>
@@ -141,14 +141,14 @@ include("../conexao.php"); // Conecta ao banco para carregar fornecedores e prod
           <select class="form-control" id="id_produto_ajuste" name="id_produto" required>
             <option value="">— Selecione —</option>
             <?php
-            // Busca os produtos com a quantidade atual de estoque para mostrar no select
+            // Popula o select com todos os produtos cadastrados, mostrando o estoque atual entre parênteses. A query seleciona o ID e o nome de todos os produtos, juntamente com a quantidade atual em estoque usando uma junção LEFT JOIN entre as tabelas produto e estoque. A função COALESCE é usada para mostrar 0 quando não há registro de estoque para um produto. O resultado é ordenado por nome do produto e iterado para gerar as opções do select, onde cada opção exibe o nome do produto seguido do estoque atual para informar ao usuário a quantidade disponível antes de fazer o ajuste.
             $sql = "SELECT produto.id, produto.nome, COALESCE(estoque.quantidade, 0) AS quantidade
                     FROM produto
                     LEFT JOIN estoque ON estoque.id_produto = produto.id
                     ORDER BY produto.nome";
             foreach ($pdo->query($sql) as $p):
             ?>
-              <!-- Mostra o estoque atual entre parênteses para o usuário saber de onde está partindo -->
+              <!-- Cada opção do select mostra o nome do produto e a quantidade atual em estoque entre parênteses. O valor da opção é o ID do produto, que será enviado no formulário para identificar qual produto deve ter o estoque ajustado. A função htmlspecialchars é usada para evitar problemas de segurança ao exibir o nome do produto, garantindo que caracteres especiais sejam tratados corretamente. -->
               <option value="<?= $p['id'] ?>">
                 <?= htmlspecialchars($p['nome']) ?> (Estoque atual: <?= $p['quantidade'] ?> un.)
               </option>
@@ -179,13 +179,13 @@ include("../conexao.php"); // Conecta ao banco para carregar fornecedores e prod
 </div><!-- fim do container -->
 
 <script>
-// Função que troca qual aba está visível na tela
+// Função para trocar entre as abas "Com Fornecedor" e "Ajuste Direto". Quando um botão de aba é clicado, a função esconde ambas as abas e depois mostra apenas a aba correspondente ao botão clicado. Além disso, a função remove a classe "ativa" de todos os botões de aba e adiciona essa classe apenas ao botão que foi clicado, para indicar visualmente qual aba está selecionada. Isso permite ao usuário navegar facilmente entre os dois modos de entrada de estoque disponíveis nesta página.
 function trocarAba(idAba, botao) {
     // Esconde as duas abas antes de mostrar a selecionada
     document.getElementById('comFornecedor').style.display = 'none';
     document.getElementById('semFornecedor').style.display  = 'none';
 
-    // Remove a classe "ativa" de todos os botões de aba
+    // Remove a classe "ativa" de todos os botões de aba para resetar o estado visual
     document.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
 
     // Mostra a aba clicada e marca o botão como ativo

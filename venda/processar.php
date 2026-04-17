@@ -42,43 +42,45 @@ try { //try é usado para envolver um bloco de código que pode gerar uma exceç
 
     $idVenda = $pdo->lastInsertId(); // idVenda é uma variável que armazena o ID da venda recém-inserida na tabela "venda". lastInsertId() é um método do objeto PDO que retorna o ID da última linha inserida no banco de dados. Isso é útil para obter o ID da venda que acabou de ser registrada, permitindo que seja usado posteriormente para associar os itens vendidos a essa venda específica.
 
-    // 3. Registra o item vendido nessa venda
+    //$stmt3 é uma variável que armazena a consulta SQL preparada para inserir um novo item de venda na tabela "item_venda". prepare() é um método do objeto PDO que prepara a consulta para execução, permitindo o uso de parâmetros nomeados (:venda, :prod e :qtd) para evitar injeção de SQL. Insert INTO item_venda (id_venda, id_produto, quantidade) VALUES (:venda, :prod, :qtd) é a consulta SQL que insere um novo registro na tabela "item_venda", associando o ID da venda ($idVenda), o ID do produto ($idProduto) e a quantidade vendida ($qtdCompra). VALUES (:venda, :prod, :qtd) indica que os valores a serem inseridos serão fornecidos por meio dos parâmetros nomeados. execute() é chamado em seguida para executar a consulta, passando um array associativo que vincula os parâmetros nomeados aos valores reais. Isso registra o item vendido na tabela "item_venda", associando-o à venda correspondente.
     $stmt3 = $pdo->prepare("INSERT INTO item_venda (id_venda, id_produto, quantidade)
                             VALUES (:venda, :prod, :qtd)");
     $stmt3->execute([':venda' => $idVenda, ':prod' => $idProduto, ':qtd' => $qtdCompra]);
 
-    // 4. Desconta a quantidade vendida do estoque
+    // 4. stmt4 é uma variável que armazena a consulta SQL preparada para atualizar a quantidade do produto no estoque. prepare() é um método do objeto PDO que prepara a consulta para execução, permitindo o uso de parâmetros nomeados (:qtd e :id) para evitar injeção de SQL. UPDATE estoque SET quantidade = quantidade - :qtd WHERE id_produto = :id é a consulta SQL que atualiza a tabela "estoque", subtraindo a quantidade vendida (:qtd) da quantidade atual do produto identificado por :id. execute() é chamado em seguida para executar a consulta, passando um array associativo que vincula os parâmetros nomeados aos valores reais ($qtdCompra e $idProduto). Isso reduz a quantidade disponível do produto no estoque de acordo com a venda realizada.
     $stmt4 = $pdo->prepare("UPDATE estoque SET quantidade = quantidade - :qtd
                             WHERE id_produto = :id");
     $stmt4->execute([':qtd' => $qtdCompra, ':id' => $idProduto]);
 
-    // 5. Busca o nome e preço do produto para montar o resumo na tela
+    // 5. stmt5 é uma variável que armazena a consulta SQL preparada para selecionar o nome e preço do produto vendido. prepare() é um método do objeto PDO que prepara a consulta para execução, permitindo o uso de parâmetros nomeados (:id) para evitar injeção de SQL. SELECT nome, preco FROM produto WHERE id = :id é a consulta SQL que seleciona o nome e preço do produto da tabela "produto" onde o ID do produto corresponde ao valor fornecido por :id. execute() é chamado em seguida para executar a consulta, passando um array associativo que vincula o parâmetro nomeado :id ao valor real $idProduto. fetch(PDO::FETCH_ASSOC) é usado para obter os resultados da consulta como um array associativo, permitindo acessar os valores do nome e preço do produto usando as chaves 'nome' e 'preco'. Isso é útil para exibir as informações do produto no resumo da venda.
     $stmt5 = $pdo->prepare("SELECT nome, preco FROM produto WHERE id = :id");
     $stmt5->execute([':id' => $idProduto]);
     $produto = $stmt5->fetch(PDO::FETCH_ASSOC);
 
-    $pdo->commit(); // Confirma as três operações no banco de uma vez
+    $pdo->commit(); // commit() é um método do objeto PDO que confirma a transação iniciada anteriormente com beginTransaction(). Isso significa que todas as operações de banco de dados executadas desde o início da transação serão permanentemente aplicadas ao banco de dados. Se todas as etapas do processo de venda foram concluídas com sucesso, commit() é chamado para garantir que as alterações sejam salvas no banco de dados. Se alguma etapa falhar, a transação pode ser revertida usando rollBack() para desfazer todas as alterações
 
-    // Calcula o valor total da venda para exibir no resumo
+    //$total é uma variável que calcula o valor total da venda multiplicando o preço unitário do produto ($produto['preco']) pela quantidade comprada ($qtdCompra). Isso fornece o valor total que o cliente deve pagar pela quantidade de produto adquirida, permitindo exibir esse valor no resumo da venda para o cliente.
     $total = $produto['preco'] * $qtdCompra;
 
-} catch (Exception $e) {
-    $pdo->rollBack(); // Se qualquer passo falhou, desfaz tudo
+} catch (Exception $e) { // catch é usado para capturar e tratar exceções que possam ocorrer durante a execução do bloco try. Se uma exceção for lançada dentro do bloco try, a execução do código é interrompida e o controle é transferido para o bloco catch correspondente, onde a exceção pode ser tratada de forma adequada. No caso deste código, se ocorrer qualquer erro durante o processo de venda (como falha na inserção de dados ou atualização do estoque), a transação será revertida usando rollBack() para garantir que o banco de dados permaneça consistente, e uma mensagem de erro será exibida ao usuário.
+    $pdo->rollBack(); 
     die("Erro ao processar venda: " . $e->getMessage());
-}
+} 
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Venda Realizada</title>
-  <link rel="stylesheet" href="../estilo.css">
-</head>
-<body>
+<!DOCTYPE html> <!-- Declaração do tipo de documento HTML5, indicando que o conteúdo da página é estruturado usando a linguagem HTML. -->
+<html lang="pt-BR"> <!-- Elemento raiz do documento HTML, com o atributo lang definido como "pt-BR" para indicar que o idioma principal da página é o português do Brasil. -->
+<head> <!-- Elemento de cabeçalho do documento HTML, onde são definidas as metatags, título da página e links para arquivos de estilo. -->
+  <meta charset="UTF-8"> <!-- Define a codificação de caracteres do documento como UTF-8, garantindo que caracteres acentuados e especiais sejam exibidos corretamente. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Define a configuração de visualização para dispositivos móveis, garantindo que a página seja responsiva e se ajuste corretamente em diferentes tamanhos de tela. -->
+  <title>Venda Realizada</title> <!-- Define o título da página, que é exibido na aba do navegador e em resultados de pesquisa. -->
+  <link rel="stylesheet" href="../estilo.css"> <!-- Link para o arquivo de estilo CSS externo, que contém as regras de estilo para a aparência da página. O caminho "../estilo.css" indica que o arquivo está localizado um nível acima do diretório atual. -->
+</head><!-- O elemento head é fechado aqui, indicando o fim da seção de cabeçalho do documento HTML. -->
+<body> <!-- Elemento de corpo do documento HTML, onde o conteúdo visível da página é colocado. Tudo o que for exibido para o usuário deve estar dentro deste elemento. -->
 
-<nav class="navbar">
-  <a href="../index.php" class="nav-brand">🛒 <span class="destaque">Loja</span> Sistema</a>
+<nav class="navbar"> <!-- Elemento de navegação da página, contendo links para diferentes seções do sistema. -->
+
+  <!--href é um atributo do elemento a (âncora) que especifica o destino do link. Neste caso, "../index.php" indica que o link levará o usuário de volta à página inicial do sistema, que está localizada um nível acima do diretório atual. class="nav-brand" é uma classe CSS aplicada a este link para estilização específica, geralmente usada para destacar a marca ou nome do sistema na barra de navegação. -->
+  <a href="../index.php" class="nav-brand">🛒 <span class="destaque">Loja</span> Sistema</a> 
   <div class="nav-links">
     <a href="../cliente/cadastrar.php">Clientes</a>
     <a href="../produto/cadastrar.php">Produtos</a>

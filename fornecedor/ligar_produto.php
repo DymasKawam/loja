@@ -46,7 +46,7 @@ include("../conexao.php"); // Conecta ao banco para buscar fornecedores e produt
     </div>
 
     <?php
-    // Mostra mensagem de sucesso se veio redirecionado do salvar_ligacao.php
+    // Verifica se a URL tem ?msg=sucesso para mostrar mensagem de confirmação. Isso acontece depois de um cadastro bem-sucedido, quando salvar_ligacao.php redireciona de volta aqui.
     if (isset($_GET['msg']) && $_GET['msg'] === 'sucesso') {
         echo '<div class="alerta alerta-sucesso">✅ Produto vinculado ao fornecedor com sucesso!</div>';
     }
@@ -64,6 +64,7 @@ include("../conexao.php"); // Conecta ao banco para buscar fornecedores e produt
           // Busca todos os fornecedores para popular o select
           foreach ($pdo->query("SELECT id, nome FROM fornecedor ORDER BY nome") as $f):
           ?>
+          <!-- Cada opção do select é preenchida com o nome do fornecedor e o valor é o ID do fornecedor. htmlspecialchars é usado para evitar problemas de segurança ao exibir o nome do fornecedor, garantindo que caracteres especiais sejam tratados corretamente. -->
             <option value="<?= $f['id'] ?>"><?= htmlspecialchars($f['nome']) ?></option>
           <?php endforeach; ?>
         </select>
@@ -99,9 +100,11 @@ include("../conexao.php"); // Conecta ao banco para buscar fornecedores e produt
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script> <!-- Importa a biblioteca Tom Select para transformar os selects de fornecedor e produto em campos de busca mais amigáveis, permitindo que o usuário digite para filtrar as opções disponíveis, melhorando a usabilidade especialmente quando há muitos fornecedores ou produtos cadastrados. -->
 <script>
+  // Define as opções para o Tom Select, incluindo um placeholder que orienta o usuário a digitar para buscar e a opção allowEmptyOption que permite limpar a seleção se necessário. Essas opções configuram o comportamento dos campos de busca, tornando-os mais intuitivos e fáceis de usar.
   const tsOpts = { placeholder: '— Digite para buscar —', allowEmptyOption: true };
+  // Inicializa o Tom Select nos selects de fornecedor e produto, aplicando as opções definidas em tsOpts para configurar o comportamento dos campos de busca. Isso transforma os selects tradicionais em componentes interativos que facilitam a seleção, especialmente em casos onde há uma grande quantidade de opções. O placeholder orienta o usuário a digitar para buscar, e allowEmptyOption permite que o campo seja limpo se necessário.
   new TomSelect('#id_fornecedor', tsOpts);
   new TomSelect('#id_produto',    tsOpts);
 </script>

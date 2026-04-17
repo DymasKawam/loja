@@ -35,9 +35,9 @@ exigir_papel('admin');
     </div>
 
     <?php
-    // Exibe mensagem de sucesso se o cadastro anterior funcionou
+    // isset é usado para verificar se a variável $_GET['msg'] está definida e não é nula. Se a mensagem de sucesso estiver presente na URL, exibe um alerta indicando que o produto foi cadastrado com sucesso.
     if (isset($_GET['msg']) && $_GET['msg'] === 'sucesso') {
-        echo '<div class="alerta alerta-sucesso">✅ Produto cadastrado com sucesso!</div>';
+        echo '<div class="alerta alerta-sucesso">✅ Produto cadastrado com sucesso!</div>'; 
     }
     ?>
 
